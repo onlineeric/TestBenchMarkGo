@@ -18,8 +18,8 @@ type TestSha256 struct {
 
 func NewTestSha256() *TestSha256 {
 	data := make([]byte, dataLength)
-	rand.Seed(randomSeed)
-	rand.Read(data)
+	generator := rand.New(rand.NewSource(randomSeed))
+	generator.Read(data)
 
 	return &TestSha256{
 		TestCase: NewTestCase(),
@@ -48,8 +48,8 @@ type TestMd5 struct {
 
 func NewTestMd5() *TestMd5 {
 	data := make([]byte, dataLength)
-	rand.Seed(randomSeed)
-	rand.Read(data)
+	generator := rand.New(rand.NewSource(randomSeed))
+	generator.Read(data)
 
 	return &TestMd5{
 		TestCase: NewTestCase(),
