@@ -6,7 +6,7 @@ import (
 )
 
 type TestCase struct {
-	startCpuTime   time.Duration
+	// startCpuTime   time.Duration		// golang cannot get CPU time
 	startMemory    uint64
 	Result         *TestResult
 	stopwatchStart time.Time
@@ -19,7 +19,6 @@ func NewTestCase() TestCase {
 func (tc *TestCase) StartBenchmarking() {
 	var memStats runtime.MemStats
 
-	tc.startCpuTime = time.Now().Sub(time.Now())
 	runtime.ReadMemStats(&memStats)
 	tc.startMemory = memStats.Alloc
 
@@ -31,12 +30,16 @@ func (tc *TestCase) StopBenchmarking() {
 
 	runtime.ReadMemStats(&memStats)
 	endMemory := memStats.Alloc
-	endCpuTime := time.Since(tc.stopwatchStart)
-
 	tc.Result = &TestResult{
-		CpuTime:       endCpuTime,
-		MemoryUsed:    endMemory - tc.startMemory,
-		ExecutionTime: endCpuTime,
+		MemoryUsed:    calcMemoryUsed(tc.startMemory, endMemory),
+		ExecutionTime: time.Since(tc.stopwatchStart),
 		FinishedTime:  time.Now(),
 	}
+}
+
+func calcMemoryUsed(startMemory uint64, endMemory uint64) int64 {
+	if endMemory < startMemory {
+		return int64(startMemory-endMemory) * -1
+	}
+	return int64(endMemory - startMemory)
 }
