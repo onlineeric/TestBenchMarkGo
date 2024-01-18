@@ -5,8 +5,8 @@ import (
 )
 
 func main() {
-	runSHA256Test()
 	runMD5Test()
+	runSHA256Test()
 }
 
 func runMD5Test() {

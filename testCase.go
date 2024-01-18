@@ -19,6 +19,7 @@ func NewTestCase() TestCase {
 func (tc *TestCase) StartBenchmarking() {
 	var memStats runtime.MemStats
 
+	runtime.GC()
 	runtime.ReadMemStats(&memStats)
 	tc.startMemory = memStats.Alloc
 
