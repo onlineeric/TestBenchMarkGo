@@ -2,6 +2,7 @@ package main
 
 import (
 	"runtime"
+	"runtime/debug"
 	"time"
 )
 
@@ -20,6 +21,7 @@ func (tc *TestCase) StartBenchmarking() {
 	var memStats runtime.MemStats
 
 	runtime.GC()
+	debug.SetGCPercent(-1) // disable garbage collector
 	runtime.ReadMemStats(&memStats)
 	tc.startMemory = memStats.Alloc
 
@@ -28,8 +30,9 @@ func (tc *TestCase) StartBenchmarking() {
 
 func (tc *TestCase) StopBenchmarking() {
 	var memStats runtime.MemStats
-
 	runtime.ReadMemStats(&memStats)
+	debug.SetGCPercent(100) // enable garbage collector
+
 	endMemory := memStats.Alloc
 	tc.Result = &TestResult{
 		MemoryUsed:    calcMemoryUsed(tc.startMemory, endMemory),
